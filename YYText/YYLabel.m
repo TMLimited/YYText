@@ -403,6 +403,11 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
     self.isAccessibilityElement = YES;
 }
 
+#pragma mark - Public
+- (YYTextHighlight *)highlightAtPoint:(CGPoint)point range:(NSRangePointer)range {
+    return [self _getHighlightAtPoint:point range:range];
+}
+
 #pragma mark - Override
 
 - (instancetype)initWithFrame:(CGRect)frame {
