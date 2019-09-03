@@ -159,6 +159,7 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
             rect = textRect;
         }
         _textLongPressAction(self, _innerText, range, rect);
+        _state.trackingTouch = NO; // fix bug: https://github.com/ibireme/YYText/pull/491/commits/92978295829a15e256ba8acdd1022490910ddb74
     }
     if (_highlight) {
         YYTextAction longPressAction = _highlight.longPressAction ? _highlight.longPressAction : _highlightLongPressAction;
