@@ -25,7 +25,7 @@
 #import "NSAttributedString+YYText.h"
 #import "UIPasteboard+YYText.h"
 #import "UIView+YYText.h"
-#import "YYImage.h"
+//#import "YYImage.h"
 #import "YYActiveObj.h"
 
 static double _YYDeviceSystemVersion() {
@@ -3228,15 +3228,23 @@ static BOOL _autoCursorEnable = NO;
     }
     if (!atr && _allowsPasteImage) {
         UIImage *img = nil;
-        if (p.yy_GIFData) {
-            img = [YYImage imageWithData:p.yy_GIFData scale:YYTextScreenScale()];
+        
+        Class cls = NSClassFromString(@"YYImage");
+        if (cls) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+            if (p.yy_GIFData) {
+                img = [(id)cls performSelector:@selector(imageWithData:scale:) withObject:p.yy_GIFData withObject:nil];
+            }
+            if (!img && p.yy_PNGData) {
+                img = [(id)cls performSelector:@selector(imageWithData:scale:) withObject:p.yy_PNGData withObject:nil];
+            }
+            if (!img && p.yy_WEBPData) {
+                img = [(id)cls performSelector:@selector(imageWithData:scale:) withObject:p.yy_WEBPData withObject:nil];
+            }
+#pragma clang diagnostic pop
         }
-        if (!img && p.yy_PNGData) {
-            img = [YYImage imageWithData:p.yy_PNGData scale:YYTextScreenScale()];
-        }
-        if (!img && p.yy_WEBPData) {
-            img = [YYImage imageWithData:p.yy_WEBPData scale:YYTextScreenScale()];
-        }
+        
         if (!img) {
             img = p.image;
         }
@@ -3245,12 +3253,18 @@ static BOOL _autoCursorEnable = NO;
         }
         if (img && img.size.width > 1 && img.size.height > 1) {
             id content = img;
-            if ([img conformsToProtocol:@protocol(YYAnimatedImage)]) {
-                id<YYAnimatedImage> ani = (id)img;
-                if (ani.animatedImageFrameCount > 1) {
-                    YYAnimatedImageView *aniView = [[YYAnimatedImageView alloc] initWithImage:img];
-                    if (aniView) {
-                        content = aniView;
+            
+            if (cls) {
+                if ([img conformsToProtocol:NSProtocolFromString(@"YYAnimatedImage")]) {
+                    NSNumber *frameCount = [img valueForKey:@"animatedImageFrameCount"];
+                    if (frameCount.integerValue > 1) {
+                        Class viewCls = NSClassFromString(@"YYAnimatedImageView");
+                        UIImageView *imgView = [(id)viewCls new];
+                        imgView.image = img;
+                        imgView.frame = CGRectMake(0, 0, img.size.width, img.size.height);
+                        if (imgView) {
+                            content = imgView;
+                        }
                     }
                 }
             }
