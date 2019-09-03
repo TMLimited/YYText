@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5FB266FC231E5828004A7300 /* YYActiveObj.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FB266FA231E5828004A7300 /* YYActiveObj.m */; };
 		D91054861F3735D20007F224 /* Animated image support.txt in Resources */ = {isa = PBXBuildFile; fileRef = D910547B1F3735D20007F224 /* Animated image support.txt */; };
 		D91054871F3735D20007F224 /* YYAnimatedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = D910547D1F3735D20007F224 /* YYAnimatedImageView.m */; };
 		D91054881F3735D20007F224 /* YYFrameImage.m in Sources */ = {isa = PBXBuildFile; fileRef = D910547F1F3735D20007F224 /* YYFrameImage.m */; };
@@ -82,6 +83,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5FB266FA231E5828004A7300 /* YYActiveObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYActiveObj.m; sourceTree = "<group>"; };
+		5FB266FB231E5828004A7300 /* YYActiveObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYActiveObj.h; sourceTree = "<group>"; };
 		D910547B1F3735D20007F224 /* Animated image support.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Animated image support.txt"; sourceTree = "<group>"; };
 		D910547C1F3735D20007F224 /* YYAnimatedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYAnimatedImageView.h; sourceTree = "<group>"; };
 		D910547D1F3735D20007F224 /* YYAnimatedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYAnimatedImageView.m; sourceTree = "<group>"; };
@@ -271,6 +274,8 @@
 		D910548D1F3735E50007F224 /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				5FB266FB231E5828004A7300 /* YYActiveObj.h */,
+				5FB266FA231E5828004A7300 /* YYActiveObj.m */,
 				D910548E1F3735E50007F224 /* YYTextContainerView.h */,
 				D910548F1F3735E50007F224 /* YYTextContainerView.m */,
 				D91054901F3735E50007F224 /* YYTextDebugOption.h */,
@@ -569,6 +574,7 @@
 				D91054C41F3735E50007F224 /* YYTextInput.m in Sources */,
 				D91054871F3735D20007F224 /* YYAnimatedImageView.m in Sources */,
 				D91054D21F3735E50007F224 /* UIView+YYText.m in Sources */,
+				5FB266FC231E5828004A7300 /* YYActiveObj.m in Sources */,
 				D91054C61F3735E50007F224 /* YYTextLayout.m in Sources */,
 				D91054FA1F3736700007F224 /* UIControl+YYAdd.m in Sources */,
 				D91054DD1F3736060007F224 /* AppDelegate.m in Sources */,
