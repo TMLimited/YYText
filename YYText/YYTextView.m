@@ -20,7 +20,7 @@
 #import "YYTextUtilities.h"
 //#import "YYCGUtilities.h"
 #import "YYTextTransaction.h"
-#import "YYWeakProxy.h"
+#import "YYTextWeakProxy.h"
 #import "UIView+YYAdd.h"
 #import "NSAttributedString+YYText.h"
 #import "UIPasteboard+YYText.h"
@@ -986,7 +986,7 @@ static BOOL _autoCursorEnable = NO;
 - (void)_startLongPressTimer {
     [_longPressTimer invalidate];
     _longPressTimer = [NSTimer timerWithTimeInterval:kLongPressMinimumDuration
-                                              target:[YYWeakProxy proxyWithTarget:self]
+                                              target:[YYTextWeakProxy proxyWithTarget:self]
                                             selector:@selector(_trackDidLongPress)
                                             userInfo:nil
                                              repeats:NO];
@@ -1077,7 +1077,7 @@ static BOOL _autoCursorEnable = NO;
     if (!_autoScrollTimer) {
         [_autoScrollTimer invalidate];
         _autoScrollTimer = [NSTimer timerWithTimeInterval:kAutoScrollMinimumDuration
-                                                   target:[YYWeakProxy proxyWithTarget:self]
+                                                   target:[YYTextWeakProxy proxyWithTarget:self]
                                                  selector:@selector(_trackDidTickAutoScroll)
                                                  userInfo:nil
                                                   repeats:YES];
@@ -1213,7 +1213,7 @@ static BOOL _autoCursorEnable = NO;
 - (void)_startSelectionDotFixTimer {
     [_selectionDotFixTimer invalidate];
     _longPressTimer = [NSTimer timerWithTimeInterval:1/15.0
-                                              target:[YYWeakProxy proxyWithTarget:self]
+                                              target:[YYTextWeakProxy proxyWithTarget:self]
                                             selector:@selector(_fixSelectionDot)
                                             userInfo:nil
                                              repeats:NO];
