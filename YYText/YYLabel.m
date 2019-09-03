@@ -1024,6 +1024,11 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
 
 - (CGSize)intrinsicContentSize {
     if (_preferredMaxLayoutWidth == 0) {
+        // 解决性能问题：https://github.com/ibireme/YYText/issues/770
+        if (_innerLayout) {
+            return _innerLayout.textBoundingSize;
+        }
+        
         YYTextContainer *container = [_innerContainer copy];
         container.size = YYTextContainerMaxSize;
         
