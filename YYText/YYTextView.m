@@ -21,12 +21,41 @@
 //#import "YYCGUtilities.h"
 #import "YYTextTransaction.h"
 #import "YYTextWeakProxy.h"
-#import "UIView+YYAdd.h"
+//#import "UIView+YYAdd.h"
 #import "NSAttributedString+YYText.h"
 #import "UIPasteboard+YYText.h"
 #import "UIView+YYText.h"
 #import "YYImage.h"
 #import "YYActiveObj.h"
+
+static double _YYDeviceSystemVersion() {
+    static double version;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        version = [UIDevice currentDevice].systemVersion.doubleValue;
+    });
+    return version;
+}
+
+#ifndef kSystemVersion
+#define kSystemVersion _YYDeviceSystemVersion()
+#endif
+
+#ifndef kiOS6Later
+#define kiOS6Later (kSystemVersion >= 6)
+#endif
+
+#ifndef kiOS7Later
+#define kiOS7Later (kSystemVersion >= 7)
+#endif
+
+#ifndef kiOS8Later
+#define kiOS8Later (kSystemVersion >= 8)
+#endif
+
+#ifndef kiOS9Later
+#define kiOS9Later (kSystemVersion >= 9)
+#endif
 
 #define kDefaultUndoLevelMax 20 // Default maximum undo level
 
@@ -793,7 +822,7 @@ static BOOL _autoCursorEnable = NO;
     BOOL insetModified = NO;
     BOOL isNeedFixContainer = NO;
     
-    if (rect.origin.y > self.size.height) {
+    if (rect.origin.y > self.frame.size.height) {
         isNeedFixContainer = YES;
     }
     
@@ -1782,7 +1811,7 @@ static BOOL _autoCursorEnable = NO;
     UIApplication *app = YYTextSharedApplication();
     if (!ctrl) ctrl = app.keyWindow.rootViewController;
     if (!ctrl) ctrl = [app.windows.firstObject rootViewController];
-    if (!ctrl) ctrl = self.viewController;
+    if (!ctrl) ctrl = self.yy_viewController;
     if (!ctrl) return nil;
     
     while (!ctrl.view.window && ctrl.presentedViewController) {
@@ -3200,19 +3229,19 @@ static BOOL _autoCursorEnable = NO;
     if (!atr && _allowsPasteImage) {
         UIImage *img = nil;
         if (p.yy_GIFData) {
-            img = [YYImage imageWithData:p.yy_GIFData scale:kScreenScale];
+            img = [YYImage imageWithData:p.yy_GIFData scale:YYTextScreenScale()];
         }
         if (!img && p.yy_PNGData) {
-            img = [YYImage imageWithData:p.yy_PNGData scale:kScreenScale];
+            img = [YYImage imageWithData:p.yy_PNGData scale:YYTextScreenScale()];
         }
         if (!img && p.yy_WEBPData) {
-            img = [YYImage imageWithData:p.yy_WEBPData scale:kScreenScale];
+            img = [YYImage imageWithData:p.yy_WEBPData scale:YYTextScreenScale()];
         }
         if (!img) {
             img = p.image;
         }
         if (!img && p.yy_ImageData) {
-            img = [UIImage imageWithData:p.yy_ImageData scale:kScreenScale];
+            img = [UIImage imageWithData:p.yy_ImageData scale:YYTextScreenScale()];
         }
         if (img && img.size.width > 1 && img.size.height > 1) {
             id content = img;
