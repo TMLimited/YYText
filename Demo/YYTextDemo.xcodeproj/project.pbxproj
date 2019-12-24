@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F28663823B1F37D00AB4D45 /* UIDevice+YYAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F28663623B1F37D00AB4D45 /* UIDevice+YYAdd.m */; };
 		5FB266FC231E5828004A7300 /* YYActiveObj.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FB266FA231E5828004A7300 /* YYActiveObj.m */; };
 		D91054861F3735D20007F224 /* Animated image support.txt in Resources */ = {isa = PBXBuildFile; fileRef = D910547B1F3735D20007F224 /* Animated image support.txt */; };
 		D91054871F3735D20007F224 /* YYAnimatedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = D910547D1F3735D20007F224 /* YYAnimatedImageView.m */; };
@@ -83,6 +84,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5F28663623B1F37D00AB4D45 /* UIDevice+YYAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+YYAdd.m"; sourceTree = "<group>"; };
+		5F28663723B1F37D00AB4D45 /* UIDevice+YYAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+YYAdd.h"; sourceTree = "<group>"; };
 		5FB266FA231E5828004A7300 /* YYActiveObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYActiveObj.m; sourceTree = "<group>"; };
 		5FB266FB231E5828004A7300 /* YYActiveObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYActiveObj.h; sourceTree = "<group>"; };
 		D910547B1F3735D20007F224 /* Animated image support.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Animated image support.txt"; sourceTree = "<group>"; };
@@ -318,6 +321,8 @@
 		D91054AB1F3735E50007F224 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				5F28663723B1F37D00AB4D45 /* UIDevice+YYAdd.h */,
+				5F28663623B1F37D00AB4D45 /* UIDevice+YYAdd.m */,
 				D91054AC1F3735E50007F224 /* NSAttributedString+YYText.h */,
 				D91054AD1F3735E50007F224 /* NSAttributedString+YYText.m */,
 				D91054AE1F3735E50007F224 /* NSParagraphStyle+YYText.h */,
@@ -551,6 +556,7 @@
 				D91055221F37367B0007F224 /* YYTextExample.m in Sources */,
 				D91054F81F3736700007F224 /* NSData+YYAdd.m in Sources */,
 				D91054F71F3736700007F224 /* NSBundle+YYAdd.m in Sources */,
+				5F28663823B1F37D00AB4D45 /* UIDevice+YYAdd.m in Sources */,
 				D91054C81F3735E50007F224 /* YYTextMagnifier.m in Sources */,
 				D91054DE1F3736060007F224 /* ViewController.m in Sources */,
 				D910551D1F37367B0007F224 /* YYTextAttributeExample.m in Sources */,

@@ -13,7 +13,7 @@
 #import "YYTextKeyboardManager.h"
 #import "YYTextUtilities.h"
 #import "UIView+YYText.h"
-
+#import "UIDevice+YYAdd.h"
 
 @implementation YYTextEffectWindow
 
@@ -36,7 +36,12 @@
             one.frame = (CGRect){.size = YYTextScreenSize()};
             one.userInteractionEnabled = NO;
             one.windowLevel = UIWindowLevelStatusBar + 1;
-            one.hidden = NO;
+            //fix statusBar not respond.
+            if (kiOS13Later) {
+                one.hidden = YES;
+            }else{
+                one.hidden = NO;
+            }
             
             // for iOS 9:
             one.opaque = NO;
@@ -77,6 +82,7 @@
     if (key && key.windowLevel > top.windowLevel) top = key;
     if (top == self) return;
     self.windowLevel = top.windowLevel + 1;
+
 }
 
 - (YYTextDirection)_keyboardDirection {
@@ -243,8 +249,7 @@
             static UIImage *placeholder;
             static dispatch_once_t onceToken;
             dispatch_once(&onceToken, ^{
-                CGRect rect = mag.bounds;
-                rect.origin = CGPointZero;
+                CGRect rect = CGRectMake(0, 0, mag.bounds.size.width, mag.bounds.size.height);
                 UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
                 CGContextRef context = UIGraphicsGetCurrentContext();
                 [[UIColor colorWithWhite:1 alpha:0.8] set];

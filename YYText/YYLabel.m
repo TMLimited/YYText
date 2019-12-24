@@ -15,6 +15,7 @@
 #import "YYTextUtilities.h"
 #import "NSAttributedString+YYText.h"
 #import <libkern/OSAtomic.h>
+#import "UIDevice+YYAdd.h"
 
 
 static dispatch_queue_t YYLabelGetReleaseQueue() {
@@ -64,6 +65,23 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
 
 
 @implementation YYLabel
+
+#pragma mark - DarkMode Adapater
+
+#ifdef __IPHONE_13_0
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection{
+    [super traitCollectionDidChange:previousTraitCollection];
+    
+    if (@available(iOS 13.0, *)) {
+        if([UITraitCollection.currentTraitCollection hasDifferentColorAppearanceComparedToTraitCollection:previousTraitCollection]){
+            [self.layer setNeedsDisplay];
+        }
+    } else {
+        // Fallback on earlier versions
+    }
+}
+#endif
+
 
 #pragma mark - Private
 
@@ -159,7 +177,6 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
             rect = textRect;
         }
         _textLongPressAction(self, _innerText, range, rect);
-        _state.trackingTouch = NO; // fix bug: https://github.com/ibireme/YYText/pull/491/commits/92978295829a15e256ba8acdd1022490910ddb74
     }
     if (_highlight) {
         YYTextAction longPressAction = _highlight.longPressAction ? _highlight.longPressAction : _highlightLongPressAction;
@@ -340,8 +357,10 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
     if (!_font) _font = [self _defaultFont];
     _textColor = _innerText.yy_color;
     if (!_textColor) _textColor = [UIColor blackColor];
-    _textAlignment = _innerText.yy_alignment;
-    _lineBreakMode = _innerText.yy_lineBreakMode;
+    //判断text 是否为空
+    BOOL isEmptyStr = _innerText.length == 0;
+    if(!isEmptyStr)_textAlignment = _innerText.yy_alignment;
+    if(!isEmptyStr)_lineBreakMode = _innerText.yy_lineBreakMode;
     NSShadow *shadow = _innerText.yy_shadow;
     _shadowColor = shadow.shadowColor;
 #if !TARGET_INTERFACE_BUILDER
@@ -402,11 +421,6 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
     _fadeOnHighlight = YES;
     
     self.isAccessibilityElement = YES;
-}
-
-#pragma mark - Public
-- (YYTextHighlight *)highlightAtPoint:(CGPoint)point range:(NSRangePointer)range {
-    return [self _getHighlightAtPoint:point range:range];
 }
 
 #pragma mark - Override
@@ -618,13 +632,7 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
                 YYTextAction tapAction = _highlight.tapAction ? _highlight.tapAction : _highlightTapAction;
                 if (tapAction) {
                     YYTextPosition *start = [YYTextPosition positionWithOffset:_highlightRange.location];
-                    NSInteger offest;
-                    if (_highlightRange.location + _highlightRange.length >= _innerLayout.visibleRange.length) {
-                        offest  = _innerLayout.visibleRange.length;
-                    }else {
-                        offest  =  _highlightRange.location + _highlightRange.length;
-                    }
-                    YYTextPosition *end = [YYTextPosition positionWithOffset:offest affinity:YYTextAffinityBackward];
+                    YYTextPosition *end = [YYTextPosition positionWithOffset:_highlightRange.location + _highlightRange.length affinity:YYTextAffinityBackward];
                     YYTextRange *range = [YYTextRange rangeWithStart:start end:end];
                     CGRect rect = [self._innerLayout rectForRange:range];
                     rect = [self _convertRectFromLayout:rect];
@@ -1031,11 +1039,6 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
 
 - (CGSize)intrinsicContentSize {
     if (_preferredMaxLayoutWidth == 0) {
-        // 解决性能问题：https://github.com/ibireme/YYText/issues/770
-        if (_innerLayout) {
-            return _innerLayout.textBoundingSize;
-        }
-        
         YYTextContainer *container = [_innerContainer copy];
         container.size = YYTextContainerMaxSize;
         
@@ -1071,7 +1074,7 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
     }
 }
 
-#pragma mark - YYTextAsyncLayerDelegate
+#pragma mark - YYAsyncLayerDelegate
 
 - (YYTextAsyncLayerDisplayTask *)newAsyncDisplayTask {
     
@@ -1254,7 +1257,7 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
     } else if ([fontName.lowercaseString isEqualToString:@"system bold"]) {
         font = [UIFont boldSystemFontOfSize:font.pointSize];
     } else {
-        if ([self fontIsBold_:font] && ([fontName.lowercaseString rangeOfString:@"bold"].location == NSNotFound)) {
+        if ([self fontIsBold_:font] && ![fontName.lowercaseString containsString:@"bold"]) {
             font = [UIFont fontWithName:fontName size:font.pointSize];
             font = [self boldFont_:font];
         } else {
