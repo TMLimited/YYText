@@ -177,6 +177,7 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
             rect = textRect;
         }
         _textLongPressAction(self, _innerText, range, rect);
+        _state.trackingTouch = NO; // fix bug: https://github.com/ibireme/YYText/pull/491/commits/92978295829a15e256ba8acdd1022490910ddb74
     }
     if (_highlight) {
         YYTextAction longPressAction = _highlight.longPressAction ? _highlight.longPressAction : _highlightLongPressAction;
@@ -637,7 +638,13 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
                 YYTextAction tapAction = _highlight.tapAction ? _highlight.tapAction : _highlightTapAction;
                 if (tapAction) {
                     YYTextPosition *start = [YYTextPosition positionWithOffset:_highlightRange.location];
-                    YYTextPosition *end = [YYTextPosition positionWithOffset:_highlightRange.location + _highlightRange.length affinity:YYTextAffinityBackward];
+                    NSInteger offest;
+                    if (_highlightRange.location + _highlightRange.length >= _innerLayout.visibleRange.length) {
+                        offest  = _innerLayout.visibleRange.length;
+                    }else {
+                        offest  =  _highlightRange.location + _highlightRange.length;
+                    }
+                   YYTextPosition *end = [YYTextPosition positionWithOffset:offest affinity:YYTextAffinityBackward];
                     YYTextRange *range = [YYTextRange rangeWithStart:start end:end];
                     CGRect rect = [self._innerLayout rectForRange:range];
                     rect = [self _convertRectFromLayout:rect];
@@ -1044,6 +1051,11 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
 
 - (CGSize)intrinsicContentSize {
     if (_preferredMaxLayoutWidth == 0) {
+        // 解决性能问题：https://github.com/ibireme/YYText/issues/770
+        if (_innerLayout) {
+            return _innerLayout.textBoundingSize;
+        }
+        
         YYTextContainer *container = [_innerContainer copy];
         container.size = YYTextContainerMaxSize;
         
@@ -1079,7 +1091,7 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
     }
 }
 
-#pragma mark - YYAsyncLayerDelegate
+#pragma mark - YYTextAsyncLayerDelegate
 
 - (YYTextAsyncLayerDisplayTask *)newAsyncDisplayTask {
     
@@ -1262,7 +1274,7 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
     } else if ([fontName.lowercaseString isEqualToString:@"system bold"]) {
         font = [UIFont boldSystemFontOfSize:font.pointSize];
     } else {
-        if ([self fontIsBold_:font] && ![fontName.lowercaseString containsString:@"bold"]) {
+        if ([self fontIsBold_:font] && ![fontName.lowercaseString containsString:@"bold"].location == NSNotFound) {
             font = [UIFont fontWithName:fontName size:font.pointSize];
             font = [self boldFont_:font];
         } else {
