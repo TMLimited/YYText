@@ -334,6 +334,13 @@ NS_ASSUME_NONNULL_BEGIN
  
  */
 
+
+/// 根据point和range获得YYTextHighlight
+/// @author frank-du
+/// @param point 参数
+/// @param range 参数
+- (YYTextHighlight *)highlightAtPoint:(CGPoint)point range:(NSRangePointer)range;
+
 @end
 
 
