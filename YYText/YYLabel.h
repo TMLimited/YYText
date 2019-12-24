@@ -9,6 +9,11 @@
 //  LICENSE file in the root directory of this source tree.
 //
 
+/*
+同步自https://github.com/NSaylor/YYKit/commit/d40704b54851728eaf3e15b08f0a513e3d89dd7c
+去除所有Warning，并做了YYText的适配（YYKit中的YYText和YYText的的代码略有差异）
+*/
+
 #import <UIKit/UIKit.h>
 
 #if __has_include(<YYText/YYText.h>)

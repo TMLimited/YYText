@@ -17,7 +17,6 @@
 #include <mach/mach.h>
 #include <arpa/inet.h>
 #include <ifaddrs.h>
-#import "NSString+YYAdd.h"
 
 @implementation UIDevice (YYAdd)
 
