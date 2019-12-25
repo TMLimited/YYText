@@ -1390,6 +1390,7 @@ return style. _attr_;
                  (id)kCTRunDelegateAttributeName,
                  YYTextBackedStringAttributeName,
                  YYTextBindingAttributeName,
+                 YYTextHighlightAttributeName, // 修复bug，增加删除highlight
                  YYTextAttachmentAttributeName].mutableCopy;
         if (kiOS8Later) {
             [keys addObject:(id)kCTRubyAnnotationAttributeName];
