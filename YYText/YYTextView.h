@@ -378,6 +378,16 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic) CGFloat extraAccessoryViewHeight;
 
+#pragma mark - BP Addtion
+/**
+ Set the text that will be replaced to this color, when methoed '- (void)_replaceRange:' is being calling.
+ To resolve the problem that text is also the highlight color after being replaced.
+ 
+ 当调用 '- (void)_replaceRange:' 方法时,将等待替换的文字颜色设置为此颜色.
+ 以解决高亮文本在替换时,文字颜色依然保持高亮的问题.
+ */
+@property (nullable, nonatomic, strong) UIColor *textReplaceColor;
+
 @end
 
 
@@ -434,6 +444,7 @@ IB_DESIGNABLE
 @property (nullable, nonatomic, readwrite, strong) __kindof UIView *inputView;
 @property (nullable, nonatomic, readwrite, strong) __kindof UIView *inputAccessoryView;
 @property (nonatomic) CGFloat extraAccessoryViewHeight;
+@property (nullable, nonatomic, strong) UIColor *textReplaceColor;
 @end
 #endif // !TARGET_INTERFACE_BUILDER
 

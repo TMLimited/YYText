@@ -1730,6 +1730,10 @@ static BOOL _autoCursorEnable = NO;
         }
     }
     
+    if (self.textReplaceColor && range.asRange.length > 0) {
+        [_innerText yy_setColor:self.textReplaceColor range:range.asRange];
+    }
+    
     //这里的代理方法 需要判断，如果设置了解析器则不执行，分析解析器中重复执行会有问题。
     if (!self.textParser) [_inputDelegate textWillChange:self];
     NSRange newRange = NSMakeRange(range.asRange.location, text.length);
