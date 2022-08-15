@@ -169,6 +169,7 @@ typedef NS_ENUM(NSUInteger, YYTextMoveDirection) {
     BOOL _isPasteOp;         ///标记粘贴操作
     //    NSMutableDictionary *_dicSaylorStack;///用于标识搜狗键盘的操作
     BOOL _isAutoCursorEnable; ///用于标记第一次启用自动光标定位，辅助记录scTop 原数据。
+    BOOL _longPressAction; ///正在长按
 }
 
 
@@ -470,7 +471,7 @@ static BOOL _autoCursorEnable = NO;
     if (!_state.trackingTouch) return;
     
     CGPoint trackingPoint = [self _convertPointToLayout:_trackingPoint];
-    YYTextPosition *newPos = [_innerLayout closestPositionToPoint:trackingPoint];
+    YYTextPosition *newPos = [_innerLayout closestPositionToPoint:trackingPoint ignoreAboveAndBelow:YES];
     if (newPos) {
         newPos = [self _correctedTextPosition:newPos];
         if (_markedTextRange) {
@@ -1114,7 +1115,7 @@ static BOOL _autoCursorEnable = NO;
                 _selectionView.caretBlinks = NO;
                 _state.trackingCaret = YES;
                 CGPoint trackingPoint = [self _convertPointToLayout:_trackingPoint];
-                YYTextPosition *newPos = [_innerLayout closestPositionToPoint:trackingPoint];
+                YYTextPosition *newPos = [_innerLayout closestPositionToPoint:trackingPoint ignoreAboveAndBelow:YES];
                 newPos = [self _correctedTextPosition:newPos];
                 if (newPos) {
                     if (_markedTextRange) {
@@ -1144,6 +1145,7 @@ static BOOL _autoCursorEnable = NO;
             }
         }
     }
+    _longPressAction = YES;
 }
 
 /// Start auto scroll timer, used for auto scroll tick.
@@ -1427,7 +1429,7 @@ static BOOL _autoCursorEnable = NO;
     } else {
         magPoint.y += kMagnifierRangedTrackFix;
     }
-    YYTextPosition *position = [_innerLayout closestPositionToPoint:magPoint];
+    YYTextPosition *position = [_innerLayout closestPositionToPoint:magPoint ignoreAboveAndBelow:YES];
     NSUInteger lineIndex = [_innerLayout lineIndexForPosition:position];
     if (lineIndex < _innerLayout.lines.count) {
         YYTextLine *line = _innerLayout.lines[lineIndex];
@@ -3026,7 +3028,13 @@ static BOOL _autoCursorEnable = NO;
                     [self _showMenu];
                 } else {
                     if (_state.showingMenu) [self _hideMenu];
-                    else [self _showMenu];
+                    else {
+                        if (_longPressAction) {
+                            [self _showMenu];
+                        }else {
+                            [self select:[UIMenuController sharedMenuController]];
+                        }
+                    }
                 }
             } else if (_state.trackingGrabber) {
                 [self _updateTextRangeByTrackingGrabber];
@@ -3094,6 +3102,7 @@ static BOOL _autoCursorEnable = NO;
     if (!_state.swallowTouch) {
         [super touchesEnded:touches withEvent:event];
     }
+    _longPressAction = NO;
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -3104,7 +3113,7 @@ static BOOL _autoCursorEnable = NO;
     if (!_state.swallowTouch) {
         [super touchesCancelled:touches withEvent:event];
     }
-    
+    _longPressAction = NO;
 }
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
@@ -4039,7 +4048,7 @@ static BOOL _autoCursorEnable = NO;
 - (YYTextPosition *)closestPositionToPoint:(CGPoint)point {
     [self _updateIfNeeded];
     point = [self _convertPointToLayout:point];
-    YYTextPosition *position = [_innerLayout closestPositionToPoint:point];
+    YYTextPosition *position = [_innerLayout closestPositionToPoint:point ignoreAboveAndBelow:YES];
     return [self _correctedTextPosition:position];
 }
 

@@ -1352,6 +1352,10 @@ fail:
 }
 
 - (YYTextPosition *)closestPositionToPoint:(CGPoint)point {
+    return [self closestPositionToPoint:point ignoreAboveAndBelow:NO];
+}
+
+- (YYTextPosition *)closestPositionToPoint:(CGPoint)point ignoreAboveAndBelow:(BOOL)ignoreAboveAndBelow {
     BOOL isVertical = _container.verticalForm;
     // When call CTLineGetStringIndexForPosition() on ligature such as 'fi',
     // and the point `hit` the glyph's left edge, it may get the ligature inside offset.
@@ -1469,17 +1473,19 @@ fail:
         }
     }
     
-    // above whole text frame
-    if (lineIndex == 0 && (isVertical ? (point.x > line.right) : (point.y < line.top))) {
-        position = 0;
-        finalAffinity = YYTextAffinityForward;
-        finalAffinityDetected = YES;
-    }
-    // below whole text frame
-    if (lineIndex == _lines.count - 1 && (isVertical ? (point.x < line.left) : (point.y > line.bottom))) {
-        position = line.range.location + line.range.length;
-        finalAffinity = YYTextAffinityBackward;
-        finalAffinityDetected = YES;
+    if (!ignoreAboveAndBelow) {
+        // above whole text frame
+        if (lineIndex == 0 && (isVertical ? (point.x > line.right) : (point.y < line.top))) {
+            position = 0;
+            finalAffinity = YYTextAffinityForward;
+            finalAffinityDetected = YES;
+        }
+        // below whole text frame
+        if (lineIndex == _lines.count - 1 && (isVertical ? (point.x < line.left) : (point.y > line.bottom))) {
+            position = line.range.location + line.range.length;
+            finalAffinity = YYTextAffinityBackward;
+            finalAffinityDetected = YES;
+        }
     }
     
     // There must be at least one non-linebreak char,
@@ -1547,7 +1553,7 @@ fail:
     if (!oldPosition || !otherPosition) {
         return oldPosition;
     }
-    YYTextPosition *newPos = [self closestPositionToPoint:point];
+    YYTextPosition *newPos = [self closestPositionToPoint:point ignoreAboveAndBelow:YES];
     if (!newPos) return oldPosition;
     if ([newPos compare:otherPosition] == [oldPosition compare:otherPosition] &&
         newPos.offset != otherPosition.offset) {
@@ -1562,7 +1568,7 @@ fail:
     } else {
         point.y = (vertical.head + vertical.foot) * 0.5;
     }
-    newPos = [self closestPositionToPoint:point];
+    newPos = [self closestPositionToPoint:point ignoreAboveAndBelow:YES];
     if ([newPos compare:otherPosition] == [oldPosition compare:otherPosition] &&
         newPos.offset != otherPosition.offset) {
         return newPos;
@@ -1612,7 +1618,7 @@ fail:
 }
 
 - (YYTextRange *)closestTextRangeAtPoint:(CGPoint)point {
-    YYTextPosition *pos = [self closestPositionToPoint:point];
+    YYTextPosition *pos = [self closestPositionToPoint:point ignoreAboveAndBelow:YES];
     if (!pos) return nil;
     NSUInteger lineIndex = [self lineIndexForPosition:pos];
     if (lineIndex == NSNotFound) return nil;

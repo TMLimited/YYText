@@ -355,6 +355,18 @@ extern const CGSize YYTextContainerMaxSize;
 - (nullable YYTextPosition *)closestPositionToPoint:(CGPoint)point;
 
 /**
+ The closest text position to a specified point.
+ 
+ @discussion This method takes into account the restrict of emoji, line break
+ character, binding text and text affinity.
+ 
+ @param point  A point in the container.
+ @param ignoreAboveAndBelow ignore above whole text frame and below whole text frame.
+ @return A text position, or nil if not found.
+ */
+- (nullable YYTextPosition *)closestPositionToPoint:(CGPoint)point ignoreAboveAndBelow:(BOOL)ignoreAboveAndBelow;
+
+/**
  Returns the new position when moving selection grabber in text view.
  
  @discussion There are two grabber in the text selection period, user can only 
