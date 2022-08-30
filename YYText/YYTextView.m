@@ -1740,7 +1740,10 @@ static BOOL _autoCursorEnable = NO;
     if (!self.textParser) [_inputDelegate textWillChange:self];
     NSRange newRange = NSMakeRange(range.asRange.location, text.length);
     [_innerText replaceCharactersInRange:range.asRange withString:text];
-    [_innerText yy_removeDiscontinuousAttributesInRange:newRange];
+    //防止range越界
+    if ((newRange.location >= 0) && (newRange.length + newRange.location <= _innerText.length)) {
+        [_innerText yy_removeDiscontinuousAttributesInRange:newRange];
+    }
     if (!self.textParser) [_inputDelegate textDidChange:self];
     
     /*
